@@ -1,0 +1,16 @@
+# Meteor packages for streamer test app
+
+meteor-base
+mongo
+ecmascript
+ddp-common
+check
+tracker
+
+# Chat example deps
+blaze-html-templates
+accounts-password
+accounts-ui
+
+# Package under test
+harry97:streamer

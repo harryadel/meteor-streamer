@@ -1,4 +1,4 @@
-/* eslint new-cap: false */
+/* eslint new-cap: "off" */
 import { DDPCommon } from 'meteor/ddp-common';
 import { EV } from '../lib/ev';
 

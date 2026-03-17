@@ -1,7 +1,0 @@
-# Minimal packages for publishing harry97:streamer
-
-ecmascript
-ddp-common
-check
-tracker
-harry97:streamer

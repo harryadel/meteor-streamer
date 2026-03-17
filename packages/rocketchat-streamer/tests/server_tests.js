@@ -127,7 +127,7 @@ Tinytest.addAsync('streamer - server - allowEmit logged permits scope with userI
 
 Tinytest.addAsync('streamer - server - allowEmit with custom function', async function (test) {
 	const s = new Meteor.Streamer('srv-emit-fn');
-	s.allowEmit(function (eventName) {
+	s.allowEmit(function () {
 		return this.userId === 'vip';
 	});
 

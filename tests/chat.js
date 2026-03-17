@@ -3,20 +3,21 @@ const streamer = new Meteor.Streamer('chat');
 if(Meteor.isClient) {
 	const messages = new Mongo.Collection(null);
 
-	window.sendMessage = function(text) {
-		streamer.emit('message', {
+	window.sendMessage = async function(text) {
+		const user = await Meteor.userAsync();
+		await streamer.emit('message', {
 			type: 'user',
-			user: Meteor.user() ? Meteor.user().username : 'anonymous',
+			user: user ? user.username : 'anonymous',
 			text: text
 		});
-		messages.insert({
+		await messages.insertAsync({
 			type: 'self',
 			text: text
 		});
 	};
 
-	streamer.on('message', function(message) {
-		messages.insert(message);
+	streamer.on('message', async function(message) {
+		await messages.insertAsync(message);
 	});
 
 	Template.body.events({

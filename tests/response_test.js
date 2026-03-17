@@ -1,7 +1,7 @@
 const streamer = new Meteor.Streamer('test', {retransmitToSelf: true});
 
 if (Meteor.isClient) {
-	const call = (eventName, params, paramsReply) => {
+	const call = async (eventName, params, paramsReply) => {
 		streamer.once(eventName, (...args) => {
 			if (JSON.stringify(args) === JSON.stringify(paramsReply)) {
 				console.log('√', eventName, args);
@@ -9,7 +9,7 @@ if (Meteor.isClient) {
 				console.warn('X', eventName, args);
 			}
 		});
-		streamer.emit(eventName, ...params);
+		await streamer.emit(eventName, ...params);
 	};
 
 	window.test = () => {

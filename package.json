@@ -1,0 +1,10 @@
+{
+  "name": "meteor-streamer",
+  "private": true,
+  "scripts": {
+    "lint": "eslint packages/ tests/"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1"
+  }
+}

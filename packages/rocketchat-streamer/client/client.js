@@ -122,7 +122,7 @@ class Streamer extends EV {
 				}
 			));
 			this.subscriptions[eventName] = { subscription };
-		})
+		});
 	}
 
 	onReconnect(fn) {

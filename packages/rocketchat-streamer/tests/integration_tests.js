@@ -3,6 +3,7 @@ if (Meteor.isServer) {
 	integrationStreamer.allowRead('all');
 	integrationStreamer.allowWrite('all');
 
+	// eslint-disable-next-line no-unused-vars
 	const deniedStreamer = new Meteor.Streamer('intg-denied');
 	// defaults: read='none', write='none'
 
@@ -88,7 +89,7 @@ if (Meteor.isClient) {
 	Tinytest.addAsync('streamer - integration - getLastMessageFromEvent returns cached message', function (test, done) {
 		const streamer = new Meteor.Streamer('intg-test');
 
-		streamer.on('cached-msg', function (data) {
+		streamer.on('cached-msg', function () {
 			const last = streamer.getLastMessageFromEvent('cached-msg');
 			test.isTrue(Array.isArray(last));
 			test.equal(last[0], 'cache-test');

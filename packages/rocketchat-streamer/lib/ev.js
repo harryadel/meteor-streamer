@@ -43,4 +43,4 @@ export class EV {
 	removeAllListeners(event) {
 		this.handlers[event] = undefined;
 	}
-};
+}

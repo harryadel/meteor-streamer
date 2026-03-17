@@ -1,0 +1,13 @@
+{
+  "name": "streamer-tests",
+  "private": true,
+  "scripts": {
+    "test": "METEOR_PACKAGE_DIRS=../packages meteor test-packages harry97:streamer --once --driver-package meteortesting:mocha --raw-logs",
+    "test:watch": "METEOR_PACKAGE_DIRS=../packages meteor test-packages harry97:streamer --driver-package test-in-browser",
+    "start": "METEOR_PACKAGE_DIRS=../packages meteor"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.29.2",
+    "meteor-node-stubs": "^1.2.12"
+  }
+}
