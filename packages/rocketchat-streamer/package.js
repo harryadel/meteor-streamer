@@ -1,8 +1,8 @@
 Package.describe({
-	name: 'harry97:streamer',
+	name: 'rocketchat:streamer',
 	version: '2.0.0',
 	summary: 'DB less realtime communication for meteor',
-	git: 'https://github.com/harryadel/meteor-streamer.git'
+	git: 'https://github.com/RocketChat/meteor-streamer.git'
 });
 
 Package.onUse(function(api) {
@@ -19,7 +19,7 @@ Package.onUse(function(api) {
 });
 
 Package.onTest(function(api) {
-	api.use('harry97:streamer');
+	api.use('rocketchat:streamer');
 	api.use(['ecmascript', 'ddp-common', 'check', 'tracker']);
 	api.use(['tinytest', 'test-helpers']);
 

@@ -17,7 +17,6 @@ meteor add rocketchat:streamer
 * Use async/await for permissions and methods
 * Use `callAsync` instead of deprecated `call` on client
 * Update `findOne` to `findOneAsync` in examples
-* Fork published as `harry97:streamer`
 
 ### 1.1.0 (2019-12-18)
 * Return a Promise on subscribe
