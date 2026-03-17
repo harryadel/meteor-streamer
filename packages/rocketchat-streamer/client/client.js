@@ -1,5 +1,7 @@
-/* globals DDPCommon, EV */
 /* eslint-disable new-cap */
+import { DDPCommon } from 'meteor/ddp-common';
+import { EV } from '../lib/ev';
+
 const NonEmptyString = Match.Where(function (x) {
 	check(x, String);
 	return x.length > 0;
@@ -40,7 +42,7 @@ class StreamerCentral extends EV {
 
 Meteor.StreamerCentral = new StreamerCentral;
 
-Meteor.Streamer = class Streamer extends EV {
+class Streamer extends EV {
 	constructor(name, { useCollection = false, ddpConnection = Meteor.connection } = {}) {
 		if (Meteor.StreamerCentral.instances[name]) {
 			console.warn('Streamer instance already exists:', name);
@@ -178,4 +180,8 @@ Meteor.Streamer = class Streamer extends EV {
 	emit(...args) {
 		this.ddpConnection.call(this.subscriptionName, ...args);
 	}
-};
+}
+
+Meteor.Streamer = Streamer;
+
+export { Streamer, StreamerCentral };

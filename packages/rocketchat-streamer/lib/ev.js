@@ -1,7 +1,4 @@
-/* globals EV:true */
-/* exported EV */
-
-EV = class EV {
+export class EV {
 	constructor() {
 		this.handlers = {};
 	}

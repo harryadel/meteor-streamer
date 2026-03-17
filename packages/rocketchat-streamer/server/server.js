@@ -1,6 +1,6 @@
-/* globals EV */
 /* eslint new-cap: false */
 import { DDPCommon } from 'meteor/ddp-common';
+import { EV } from '../lib/ev';
 
 class StreamerCentral extends EV {
 	constructor() {
@@ -13,7 +13,7 @@ class StreamerCentral extends EV {
 Meteor.StreamerCentral = new StreamerCentral;
 
 const changedPayload = function (collection, id, fields) {
-	if (_.isEmpty(fields)) {
+	if (!fields || Object.keys(fields).length === 0) {
 		return;
 	}
 	return DDPCommon.stringifyDDP({
@@ -32,7 +32,7 @@ const send = function (self, msg) {
 };
 
 
-Meteor.Streamer = class Streamer extends EV {
+class Streamer extends EV {
 	constructor(name, {retransmit = true, retransmitToSelf = false} = {}) {
 		if (Meteor.StreamerCentral.instances[name]) {
 			console.warn('Streamer instance already exists:', name);
@@ -193,28 +193,28 @@ Meteor.Streamer = class Streamer extends EV {
 		}
 	}
 
-	isReadAllowed(scope, eventName, args) {
+	async isReadAllowed(scope, eventName, args) {
 		if (this._allowRead[eventName]) {
-			return this._allowRead[eventName].call(scope, eventName, ...args);
+			return await this._allowRead[eventName].call(scope, eventName, ...args);
 		}
 
-		return this._allowRead['__all__'].call(scope, eventName, ...args);
+		return await this._allowRead['__all__'].call(scope, eventName, ...args);
 	}
 
-	isEmitAllowed(scope, eventName, ...args) {
+	async isEmitAllowed(scope, eventName, ...args) {
 		if (this._allowEmit[eventName]) {
-			return this._allowEmit[eventName].call(scope, eventName, ...args);
+			return await this._allowEmit[eventName].call(scope, eventName, ...args);
 		}
 
-		return this._allowEmit['__all__'].call(scope, eventName, ...args);
+		return await this._allowEmit['__all__'].call(scope, eventName, ...args);
 	}
 
-	isWriteAllowed(scope, eventName, args) {
+	async isWriteAllowed(scope, eventName, args) {
 		if (this._allowWrite[eventName]) {
-			return this._allowWrite[eventName].call(scope, eventName, ...args);
+			return await this._allowWrite[eventName].call(scope, eventName, ...args);
 		}
 
-		return this._allowWrite['__all__'].call(scope, eventName, ...args);
+		return await this._allowWrite['__all__'].call(scope, eventName, ...args);
 	}
 
 	addSubscription(subscription, eventName) {
@@ -279,7 +279,7 @@ Meteor.Streamer = class Streamer extends EV {
 	}
 
 
-	_publish(publication, eventName, options) {
+	async _publish(publication, eventName, options) {
 		check(eventName, String);
 		check(options, Match.OneOf(Boolean, {
 			useCollection: Boolean,
@@ -305,7 +305,7 @@ Meteor.Streamer = class Streamer extends EV {
 			throw new Meteor.Error('invalid-event-name');
 		}
 
-		if (this.isReadAllowed(publication, eventName, args) !== true) {
+		if (await this.isReadAllowed(publication, eventName, args) !== true) {
 			publication.stop();
 			throw new Meteor.Error('not-allowed');
 		}
@@ -340,13 +340,13 @@ Meteor.Streamer = class Streamer extends EV {
 		const stream = this;
 		const method = {};
 
-		method[this.subscriptionName] = function(eventName, ...args) {
+		method[this.subscriptionName] = async function(eventName, ...args) {
 			check(eventName, String);
 			check(args, Array);
 
 			this.unblock();
 
-			if (stream.isWriteAllowed(this, eventName, args) !== true) {
+			if (await stream.isWriteAllowed(this, eventName, args) !== true) {
 				return;
 			}
 
@@ -362,7 +362,7 @@ Meteor.Streamer = class Streamer extends EV {
 			stream.emitWithScope(eventName, methodScope, ...args);
 
 			if (stream.retransmit === true) {
-				stream._emit(eventName, args, this.connection, true);
+				await stream._emit(eventName, args, this.connection, true);
 			}
 		};
 
@@ -373,7 +373,7 @@ Meteor.Streamer = class Streamer extends EV {
 		}
 	}
 
-	_emit(eventName, args, origin, broadcast) {
+	async _emit(eventName, args, origin, broadcast) {
 		if (broadcast === true) {
 			Meteor.StreamerCentral.emit('broadcast', this.name, eventName, args);
 		}
@@ -392,26 +392,30 @@ Meteor.Streamer = class Streamer extends EV {
 			return;
 		}
 
-		subscriptions.forEach((subscription) => {
+		for (const subscription of subscriptions) {
 			if (this.retransmitToSelf === false && origin && origin === subscription.subscription.connection) {
-				return;
+				continue;
 			}
 
-			if (this.isEmitAllowed(subscription.subscription, eventName, ...args)) {
+			if (await this.isEmitAllowed(subscription.subscription, eventName, ...args)) {
 				send(subscription.subscription._session, msg);
 			}
-		});
+		}
 	}
 
-	emit(eventName, ...args) {
-		this._emit(eventName, args, undefined, true);
+	async emit(eventName, ...args) {
+		await this._emit(eventName, args, undefined, true);
 	}
 
 	__emit(...args) {
 		return super.emit(...args);
 	}
 
-	emitWithoutBroadcast(eventName, ...args) {
-		this._emit(eventName, args, undefined, false);
+	async emitWithoutBroadcast(eventName, ...args) {
+		await this._emit(eventName, args, undefined, false);
 	}
-};
+}
+
+Meteor.Streamer = Streamer;
+
+export { Streamer, StreamerCentral };
