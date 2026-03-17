@@ -12,6 +12,16 @@ meteor add rocketchat:streamer
 
 ## History
 
+### 2.0.0 (2026-03-17)
+* Upgrade to Meteor 3.0
+* Use async/await for permissions and methods
+* Use `callAsync` instead of deprecated `call` on client
+* Update `findOne` to `findOneAsync` in examples
+* Fork published as `harry97:streamer`
+
+### 1.1.0 (2019-12-18)
+* Return a Promise on subscribe
+
 ### 1.0.2 (2019-05-19)
 * Do not use `super` to call parent classes (fix for Edge browser)
 
