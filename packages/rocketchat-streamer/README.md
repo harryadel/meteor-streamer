@@ -147,9 +147,9 @@ streamer.allowRead('all'); // Everyone can read all events
 
 streamer.allowRead('chat', 'logged'); // Only logged users can read chat events
 
-streamer.allowRead('notifications', function() { // Only admin users can read notificaiton events
+streamer.allowRead('notifications', async function() { // Only admin users can read notificaiton events
   if (this.userId) {
-    const user = Meteor.users.findOne(this.userId);
+    const user = await Meteor.users.findOneAsync(this.userId);
     if (user && user.admin === true) {
       return true;
     }
@@ -208,9 +208,9 @@ streamer.allowWrite('all'); // Everyone can write all events
 
 streamer.allowWrite('chat', 'logged'); // Only logged users can write chat events
 
-streamer.allowWrite('notifications', function(eventName, type) { // Only admin users can write notificaiton events
-  if (this.userId && type === 'new-message') {                   // and only if the first param is 'new-message'
-    const user = Meteor.users.findOne(this.userId);
+streamer.allowWrite('notifications', async function(eventName, type) { // Only admin users can write notificaiton events
+  if (this.userId && type === 'new-message') {                        // and only if the first param is 'new-message'
+    const user = await Meteor.users.findOneAsync(this.userId);
     if (user && user.admin === true) {
       return true;
     }
