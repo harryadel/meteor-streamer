@@ -42,7 +42,7 @@ if (Meteor.isServer) {
 	});
 
 	streamer.transform('only-logged', function() {
-		return Boolean(Meteor.userId());
+		return Boolean(this.userId);
 	});
 
 	streamer.transform('only-logged2', function() {

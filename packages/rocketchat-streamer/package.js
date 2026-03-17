@@ -17,3 +17,13 @@ Package.onUse(function(api) {
 
 	api.export('Streamer');
 });
+
+Package.onTest(function(api) {
+	api.use('harry97:streamer');
+	api.use(['ecmascript', 'ddp-common', 'check', 'tracker']);
+	api.use(['tinytest', 'test-helpers']);
+
+	api.addFiles('tests/ev_tests.js');
+	api.addFiles('tests/server_tests.js', 'server');
+	api.addFiles('tests/integration_tests.js');
+});

@@ -177,8 +177,8 @@ class Streamer extends EV {
 		return this.subscribe(eventName, args);
 	}
 
-	emit(...args) {
-		this.ddpConnection.call(this.subscriptionName, ...args);
+	async emit(...args) {
+		await this.ddpConnection.callAsync(this.subscriptionName, ...args);
 	}
 }
 
