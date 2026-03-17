@@ -6,7 +6,7 @@ Package.describe({
 });
 
 Package.onUse(function(api) {
-	api.versionsFrom(['1.10', '2.3', '3.0']);
+	api.versionsFrom('3.0');
 	api.use('ddp-common');
 	api.use('ecmascript');
 	api.use('check');
